@@ -1,0 +1,7 @@
+- import_playbook: playbooks/apt_packages.yml
+- import_playbook: playbooks/zsh.yml
+- import_playbook: playbooks/nvm.yml
+- import_playbook: playbooks/bun.yml
+- import_playbook: playbooks/pixi.yml
+- import_playbook: playbooks/snap_packages.yml
+- import_playbook: playbooks/idle.yml
