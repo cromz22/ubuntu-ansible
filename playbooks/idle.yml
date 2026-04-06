@@ -1,0 +1,12 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+    idle_delay_seconds: 600
+
+  tasks:
+    - name: Set GNOME idle delay
+      become: true
+      become_user: "{{ lookup('env', 'SUDO_USER') or lookup('env', 'USER') }}"
+      ansible.builtin.shell: |
+        export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+        gsettings set org.gnome.desktop.session idle-delay {{ idle_delay_seconds }}

@@ -1,0 +1,47 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    zshrc_path: "{{ home_dir }}/.zshrc"
+    nvm_dir: "{{ home_dir }}/.nvm"
+    bun_bin: "{{ home_dir }}/.bun/bin/bun"
+
+    bun_global_packages:
+      - "@openai/codex"
+
+  tasks:
+    - name: Install bun (official installer)
+      ansible.builtin.shell: |
+        curl -fsSL https://bun.sh/install | bash
+      args:
+        creates: "{{ bun_bin }}"
+
+    - name: Ensure bun PATH is configured in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '(^|:){{ home_dir }}/\.bun/bin(:|$)|\.bun/bin'
+        line: 'export PATH="$HOME/.bun/bin:$PATH"'
+        state: present
+        create: true
+
+    - name: Check that node exists via nvm
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        command -v node
+      args:
+        executable: /bin/bash
+      register: node_check
+      changed_when: false
+      failed_when: node_check.rc != 0
+
+    - name: Install global bun packages
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        "{{ bun_bin }}" add -g "{{ item }}"
+      args:
+        executable: /bin/bash
+      loop: "{{ bun_global_packages }}"

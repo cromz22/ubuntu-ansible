@@ -1,0 +1,21 @@
+- hosts: localhost
+  gather_facts: false
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    zshrc_path: "{{ home_dir }}/.zshrc"
+
+  tasks:
+    - name: Install pixi (official installer)
+      ansible.builtin.shell: |
+        curl -fsSL https://pixi.sh/install.sh | bash
+      args:
+        creates: "{{ home_dir }}/.pixi/bin/pixi"
+
+    - name: Ensure pixi in PATH (zsh, robust)
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '(^|:){{ home_dir }}/\.pixi/bin(:|$)|\.pixi/bin'
+        line: 'export PATH="$HOME/.pixi/bin:$PATH"'
+        state: present
+        create: true

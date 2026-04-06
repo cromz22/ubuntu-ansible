@@ -1,0 +1,19 @@
+- hosts: localhost
+  become: true
+
+  tasks:
+    - name: Have zsh installed
+      apt:
+        name: zsh
+        state: present
+        update_cache: true
+
+    - name: Set zsh as default shell for root
+      user:
+        name: root 
+        shell: /usr/bin/zsh
+ 
+    - name: Set zsh as default shell for user 
+      user:
+        name: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}" 
+        shell: /usr/bin/zsh

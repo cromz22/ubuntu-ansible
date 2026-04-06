@@ -1,0 +1,14 @@
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  vars:
+    snap_packages:
+      - slack
+
+  tasks:
+    - name: Install snap packages
+      community.general.snap:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ snap_packages }}"

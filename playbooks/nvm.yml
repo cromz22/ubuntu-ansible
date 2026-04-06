@@ -1,0 +1,50 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    zshrc_path: "{{ home_dir }}/.zshrc"
+    nvm_dir: "{{ home_dir }}/.nvm"
+    nvm_version: "v0.40.4"
+
+  tasks:
+    - name: Install nvm (official installer)
+      ansible.builtin.shell: |
+        curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh" | bash
+      args:
+        creates: "{{ nvm_dir }}/nvm.sh"
+
+    - name: Ensure NVM_DIR is configured in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '^\s*export NVM_DIR='
+        line: 'export NVM_DIR="$HOME/.nvm"'
+        state: present
+        create: true
+
+    - name: Ensure nvm is sourced in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: 'nvm\.sh'
+        line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+        state: present
+        create: true
+
+    - name: Install current Node LTS via nvm
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm install --lts
+        nvm alias default 'lts/*'
+      args:
+        executable: /bin/bash
+
+    - name: Verify node exists
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ nvm_dir }}"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        command -v node
+      args:
+        executable: /bin/bash
+      changed_when: false
