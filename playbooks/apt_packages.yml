@@ -12,6 +12,7 @@
           - htop
           - tmux
           - vim 
+          - xclip
           - zsh 
         state: present
         update_cache: true
