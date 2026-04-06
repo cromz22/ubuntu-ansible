@@ -2,7 +2,7 @@
 
 Ansible playbooks for provisioning a local Ubuntu workstation.
 
-This repository targets `localhost` and is intended for setting up a machine with baseline packages, `zsh`, Node.js via `nvm`, Bun, Pixi, selected Snap packages, and a GNOME idle timeout.
+This repository targets `localhost` and is intended for setting up a machine with baseline packages, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, selected Snap packages, and a GNOME idle timeout.
 
 ## Structure
 
@@ -38,18 +38,20 @@ ansible-playbook playbooks/nvm.yml
 
 1. `playbooks/apt_packages.yml`
 2. `playbooks/zsh.yml`
-3. `playbooks/nvm.yml`
-4. `playbooks/bun.yml`
-5. `playbooks/pixi.yml`
-6. `playbooks/snap_packages.yml`
-7. `playbooks/idle.yml`
+3. `playbooks/rust.yml`
+4. `playbooks/nvm.yml`
+5. `playbooks/bun.yml`
+6. `playbooks/pixi.yml`
+7. `playbooks/snap_packages.yml`
+8. `playbooks/idle.yml`
 
 This ordering matters because `playbooks/bun.yml` expects Node.js to already be available through `nvm`.
 
 ## Playbook Summary
 
-- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `git`, `tmux`, `vim`, and `zsh`
+- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`
 - `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
+- `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, and installs `procs`, `git-delta`, and `difftastic`
 - `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
 - `playbooks/bun.yml`: installs Bun, updates `~/.zshrc`, and installs global Bun packages
 - `playbooks/pixi.yml`: installs Pixi and adds it to `PATH`

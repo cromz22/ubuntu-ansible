@@ -1,0 +1,79 @@
+- hosts: localhost
+  become: false
+  gather_facts: true
+
+  vars:
+    home_dir: "{{ ansible_user_dir }}"
+    zshrc_path: "{{ home_dir }}/.zshrc"
+    cargo_bin_dir: "{{ home_dir }}/.cargo/bin"
+    rustup_home: "{{ home_dir }}/.rustup"
+    rustup_bin: "{{ cargo_bin_dir }}/rustup"
+    cargo_bin: "{{ cargo_bin_dir }}/cargo"
+
+    cargo_packages:
+      - package: procs
+        binary: procs
+      - package: git-delta
+        binary: delta
+      - package: difftastic
+        binary: difft
+
+  tasks:
+    - name: Show execution context
+      ansible.builtin.debug:
+        msg:
+          - "ansible_user_id={{ ansible_user_id }}"
+          - "ansible_user_dir={{ ansible_user_dir }}"
+          - "ansible_env.HOME={{ ansible_env.HOME | default('unset') }}"
+
+    - name: Install Rust (rustup)
+      ansible.builtin.shell: |
+        curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs | sh -s -- -y
+      args:
+        executable: /bin/bash
+        creates: "{{ rustup_bin }}"
+      environment:
+        HOME: "{{ home_dir }}"
+        CARGO_HOME: "{{ home_dir }}/.cargo"
+        RUSTUP_HOME: "{{ rustup_home }}"
+
+    - name: Ensure Cargo bin PATH is configured in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '^export PATH="\$HOME/\.cargo/bin:\$PATH"$'
+        line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+        state: present
+        create: true
+
+    - name: Install Cargo packages
+      ansible.builtin.command:
+        argv:
+          - "{{ cargo_bin }}"
+          - install
+          - --locked
+          - "{{ item.package }}"
+      args:
+        creates: "{{ cargo_bin_dir }}/{{ item.binary }}"
+      loop: "{{ cargo_packages }}"
+      environment:
+        HOME: "{{ home_dir }}"
+        CARGO_HOME: "{{ home_dir }}/.cargo"
+        RUSTUP_HOME: "{{ rustup_home }}"
+        PATH: "{{ cargo_bin_dir }}:{{ ansible_env.PATH }}"
+
+    - name: Verify rustc exists
+      ansible.builtin.command:
+        argv:
+          - "{{ cargo_bin_dir }}/rustc"
+          - --version
+      register: rustc_version
+      changed_when: false
+      environment:
+        HOME: "{{ home_dir }}"
+        CARGO_HOME: "{{ home_dir }}/.cargo"
+        RUSTUP_HOME: "{{ rustup_home }}"
+        PATH: "{{ cargo_bin_dir }}:{{ ansible_env.PATH }}"
+
+    - name: Show rustc version
+      ansible.builtin.debug:
+        var: rustc_version.stdout

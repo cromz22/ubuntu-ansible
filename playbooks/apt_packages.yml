@@ -7,12 +7,15 @@
         name:
           - build-essential
           - cmake
-          - curl 
+          - curl
+          - fd-find
           - git
           - htop
+          - ibus-mozc
+          - ripgrep
           - tmux
-          - vim 
+          - vim
           - xclip
-          - zsh 
+          - zsh
         state: present
         update_cache: true
