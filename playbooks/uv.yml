@@ -1,0 +1,24 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    zshrc_path: "{{ home_dir }}/.zshrc"
+    local_bin_dir: "{{ home_dir }}/.local/bin"
+    uv_bin: "{{ local_bin_dir }}/uv"
+
+  tasks:
+    - name: Install uv (official installer)
+      ansible.builtin.shell: |
+        curl -LsSf https://astral.sh/uv/install.sh | env INSTALLER_NO_MODIFY_PATH=1 sh
+      args:
+        creates: "{{ uv_bin }}"
+
+    - name: Ensure local bin PATH is configured in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '(^|:){{ home_dir }}/\.local/bin(:|$)|\.local/bin'
+        line: 'export PATH="$HOME/.local/bin:$PATH"'
+        state: present
+        create: true

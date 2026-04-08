@@ -2,7 +2,7 @@
 
 Ansible playbooks for provisioning a local Ubuntu workstation.
 
-This repository targets `localhost` and is intended for setting up a machine with baseline packages, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, selected Snap packages, and a GNOME idle timeout.
+This repository targets `localhost` and is intended for setting up a machine with baseline packages, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, `uv`, selected Snap packages, and a GNOME idle timeout.
 
 ## Structure
 
@@ -15,7 +15,7 @@ This repository targets `localhost` and is intended for setting up a machine wit
 
 - Ubuntu with Ansible installed
 - `sudo` access for playbooks that use `become: true`
-- Internet access for installer-based playbooks such as `nvm`, Bun, and Pixi
+- Internet access for installer-based playbooks such as `nvm`, Bun, Pixi, and `uv`
 - The `community.general` collection for the Snap playbook
 
 ## Usage
@@ -42,8 +42,9 @@ ansible-playbook playbooks/nvm.yml
 4. `playbooks/nvm.yml`
 5. `playbooks/bun.yml`
 6. `playbooks/pixi.yml`
-7. `playbooks/snap_packages.yml`
-8. `playbooks/idle.yml`
+7. `playbooks/uv.yml`
+8. `playbooks/snap_packages.yml`
+9. `playbooks/idle.yml`
 
 This ordering matters because `playbooks/bun.yml` expects Node.js to already be available through `nvm`.
 
@@ -55,5 +56,6 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 - `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
 - `playbooks/bun.yml`: installs Bun, updates `~/.zshrc`, and installs global Bun packages
 - `playbooks/pixi.yml`: installs Pixi and adds it to `PATH`
+- `playbooks/uv.yml`: installs `uv` via the official installer and adds `~/.local/bin` to `PATH`
 - `playbooks/snap_packages.yml`: installs configured Snap packages
 - `playbooks/idle.yml`: sets the GNOME idle timeout
