@@ -1,12 +1,15 @@
 - hosts: localhost
   gather_facts: false
-  vars:
-    login_user: "{{ lookup('env', 'SUDO_USER') or lookup('env', 'USER') }}"
 
   tasks:
-    - name: Set GNOME XKB option to swap Ctrl and Caps Lock
+    - name: Persist system keyboard layout and options
       become: true
-      become_user: "{{ login_user }}"
-      ansible.builtin.shell: |
-        export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
-        gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swapcaps']"
+      ansible.builtin.copy:
+        dest: /etc/default/keyboard
+        mode: '0644'
+        content: |
+          XKBMODEL="pc105"
+          XKBLAYOUT="jp"
+          XKBVARIANT=""
+          XKBOPTIONS="ctrl:swapcaps"
+          BACKSPACE="guess"
