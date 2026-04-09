@@ -23,7 +23,7 @@ This repository targets `localhost` and is intended for setting up a machine wit
 Run the full setup:
 
 ```bash
-ansible-playbook site.yml
+ansible-playbook site.yml -K
 ```
 
 Run a single playbook:
@@ -31,6 +31,10 @@ Run a single playbook:
 ```bash
 ansible-playbook playbooks/nvm.yml
 ```
+
+For any playbook that uses `become: true`, run Ansible as your normal user and let Ansible prompt for sudo with `-K` when needed.
+
+Do not run `sudo ansible-playbook ...` for the full setup in `site.yml` or for playbooks that also manage user-session state. In this repository that especially applies to `playbooks/xkb.yml`, `playbooks/fcitx5.yml`, and `playbooks/idle.yml`, which update the logged-in user's X11, DBus, or home-directory state and should execute in your user session rather than entirely as root.
 
 ## Playbook Order
 
@@ -53,8 +57,8 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 ## Playbook Summary
 
 - `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`
-- `playbooks/xkb.yml`: writes `/etc/default/keyboard` with the `jp` layout and `ctrl:swapcaps` so the keyboard mapping persists across sessions
-- `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input
+- `playbooks/xkb.yml`: writes `/etc/default/keyboard`, reapplies the system keyboard config, updates the current X11 session with `setxkbmap`, and syncs the GNOME user-level `xkb-options` override when present
+- `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input in the logged-in user's home directory
 - `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
 - `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, and installs `procs`, `git-delta`, and `difftastic`
 - `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
@@ -62,4 +66,4 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 - `playbooks/pixi.yml`: installs Pixi and adds it to `PATH`
 - `playbooks/uv.yml`: installs `uv` via the official installer and adds `~/.local/bin` to `PATH`
 - `playbooks/snap_packages.yml`: installs configured Snap packages
-- `playbooks/idle.yml`: sets the GNOME idle timeout
+- `playbooks/idle.yml`: sets the GNOME idle timeout for the logged-in user session
