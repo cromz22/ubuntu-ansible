@@ -9,9 +9,14 @@
           - cmake
           - curl
           - fd-find
+          - fcitx5
+          - fcitx5-config-qt
+          - fcitx5-frontend-gtk3
+          - fcitx5-frontend-gtk4
+          - fcitx5-mozc
           - git
           - htop
-          - ibus-mozc
+          - im-config
           - ripgrep
           - tmux
           - vim

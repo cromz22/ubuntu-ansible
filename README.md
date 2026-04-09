@@ -2,7 +2,7 @@
 
 Ansible playbooks for provisioning a local Ubuntu workstation.
 
-This repository targets `localhost` and is intended for setting up a machine with baseline packages, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, `uv`, selected Snap packages, and a GNOME idle timeout.
+This repository targets `localhost` and is intended for setting up a machine with baseline packages, GNOME XKB keyboard options, `fcitx5` Japanese input, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, `uv`, selected Snap packages, and a GNOME idle timeout.
 
 ## Structure
 
@@ -37,20 +37,24 @@ ansible-playbook playbooks/nvm.yml
 `site.yml` imports playbooks in this order:
 
 1. `playbooks/apt_packages.yml`
-2. `playbooks/zsh.yml`
-3. `playbooks/rust.yml`
-4. `playbooks/nvm.yml`
-5. `playbooks/bun.yml`
-6. `playbooks/pixi.yml`
-7. `playbooks/uv.yml`
-8. `playbooks/snap_packages.yml`
-9. `playbooks/idle.yml`
+2. `playbooks/xkb.yml`
+3. `playbooks/fcitx5.yml`
+4. `playbooks/zsh.yml`
+5. `playbooks/rust.yml`
+6. `playbooks/nvm.yml`
+7. `playbooks/bun.yml`
+8. `playbooks/pixi.yml`
+9. `playbooks/uv.yml`
+10. `playbooks/snap_packages.yml`
+11. `playbooks/idle.yml`
 
 This ordering matters because `playbooks/bun.yml` expects Node.js to already be available through `nvm`.
 
 ## Playbook Summary
 
-- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`
+- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`
+- `playbooks/xkb.yml`: sets the GNOME XKB option to swap `Ctrl` and `Caps Lock`
+- `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input
 - `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
 - `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, and installs `procs`, `git-delta`, and `difftastic`
 - `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
