@@ -13,3 +13,51 @@
           XKBVARIANT=""
           XKBOPTIONS="ctrl:swapcaps"
           BACKSPACE="guess"
+      register: keyboard_defaults
+
+    - name: Apply console keyboard configuration
+      become: true
+      ansible.builtin.command: setupcon --save --force
+      when: keyboard_defaults.changed
+
+    - name: Reload keyboard devices
+      become: true
+      ansible.builtin.command:
+        argv:
+          - udevadm
+          - trigger
+          - --subsystem-match=input
+          - --action=change
+      when: keyboard_defaults.changed
+
+    - name: Apply X11 keyboard mapping for the current session
+      ansible.builtin.command:
+        argv:
+          - setxkbmap
+          - -layout
+          - jp
+          - -option
+          - ctrl:swapcaps
+      environment:
+        DISPLAY: "{{ lookup('ansible.builtin.env', 'DISPLAY') }}"
+        XAUTHORITY: "{{ lookup('ansible.builtin.env', 'XAUTHORITY') }}"
+      when:
+        - lookup('ansible.builtin.env', 'XDG_SESSION_TYPE') == 'x11'
+        - lookup('ansible.builtin.env', 'DISPLAY') | length > 0
+
+    - name: Persist GNOME XKB options for the logged-in user
+      ansible.builtin.command:
+        argv:
+          - gsettings
+          - set
+          - org.gnome.desktop.input-sources
+          - xkb-options
+          - "['ctrl:swapcaps']"
+      environment:
+        DISPLAY: "{{ lookup('ansible.builtin.env', 'DISPLAY') }}"
+        DBUS_SESSION_BUS_ADDRESS: "{{ lookup('ansible.builtin.env', 'DBUS_SESSION_BUS_ADDRESS') }}"
+        XDG_RUNTIME_DIR: "{{ lookup('ansible.builtin.env', 'XDG_RUNTIME_DIR') }}"
+      when:
+        - lookup('ansible.builtin.env', 'XDG_SESSION_TYPE') == 'x11'
+        - "'GNOME' in lookup('ansible.builtin.env', 'XDG_CURRENT_DESKTOP')"
+        - lookup('ansible.builtin.env', 'DBUS_SESSION_BUS_ADDRESS') | length > 0
