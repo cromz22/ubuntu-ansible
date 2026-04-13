@@ -1,5 +1,11 @@
 - hosts: localhost
   become: true
+  gather_facts: false
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    local_bin_dir: "{{ home_dir }}/.local/bin"
+    zshrc_path: "{{ home_dir }}/.zshrc"
 
   tasks:
     - name: Install packages
@@ -24,3 +30,26 @@
           - zsh
         state: present
         update_cache: true
+
+    - name: Ensure local bin directory exists
+      become: false
+      file:
+        path: "{{ local_bin_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Ensure local bin PATH is configured in .zshrc
+      become: false
+      lineinfile:
+        path: "{{ zshrc_path }}"
+        regexp: '(^|:){{ home_dir }}/\.local/bin(:|$)|\.local/bin'
+        line: 'export PATH="$HOME/.local/bin:$PATH"'
+        state: present
+        create: true
+
+    - name: Provide fd command from Debian's fdfind package
+      become: false
+      file:
+        src: /usr/bin/fdfind
+        dest: "{{ local_bin_dir }}/fd"
+        state: link

@@ -56,7 +56,7 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 
 ## Playbook Summary
 
-- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`
+- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`, ensures `~/.local/bin` is on `PATH`, and exposes Debian's `fdfind` as `~/.local/bin/fd`
 - `playbooks/xkb.yml`: writes `/etc/default/keyboard`, reapplies the system keyboard config, updates the current X11 session with `setxkbmap`, and syncs the GNOME user-level `xkb-options` override when present
 - `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input in the logged-in user's home directory
 - `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
