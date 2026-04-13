@@ -5,6 +5,7 @@
   vars:
     snap_packages:
       - slack
+      - rclone
 
   tasks:
     - name: Install snap packages
