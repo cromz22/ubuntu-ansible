@@ -14,6 +14,7 @@
           - build-essential
           - cmake
           - curl
+          - emacs-nox
           - fd-find
           - fcitx5
           - fcitx5-config-qt
