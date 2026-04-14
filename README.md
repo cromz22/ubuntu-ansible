@@ -56,11 +56,11 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 
 ## Playbook Summary
 
-- `playbooks/apt_packages.yml`: installs baseline APT packages such as `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`, ensures `~/.local/bin` is on `PATH`, and exposes Debian's `fdfind` as `~/.local/bin/fd`
+- `playbooks/apt_packages.yml`: installs baseline APT packages such as `build-essential`, `clang`, `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`, ensures `~/.local/bin` is on `PATH`, and exposes Debian's `fdfind` as `~/.local/bin/fd`
 - `playbooks/xkb.yml`: writes `/etc/default/keyboard`, reapplies the system keyboard config, updates the current X11 session with `setxkbmap`, and syncs the GNOME user-level `xkb-options` override when present
 - `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input in the logged-in user's home directory
 - `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
-- `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, and installs `procs`, `git-delta`, and `difftastic`
+- `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, verifies `clang` is available for native Cargo builds, and installs `procs`, `git-delta`, `difftastic`, and `tree-sitter-cli` with `cargo install --locked`
 - `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
 - `playbooks/bun.yml`: installs Bun, updates `~/.zshrc`, and installs global Bun packages
 - `playbooks/pixi.yml`: installs Pixi and adds it to `PATH`

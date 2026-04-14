@@ -17,6 +17,8 @@
         binary: delta
       - package: difftastic
         binary: difft
+      - package: tree-sitter-cli
+        binary: tree-sitter
 
   tasks:
     - name: Show execution context
@@ -44,6 +46,29 @@
         line: 'export PATH="$HOME/.cargo/bin:$PATH"'
         state: present
         create: true
+
+    - name: Check clang is available for Cargo builds
+      ansible.builtin.command:
+        argv:
+          - /bin/sh
+          - -lc
+          - command -v clang
+      register: clang_check
+      changed_when: false
+      failed_when: false
+      environment:
+        HOME: "{{ home_dir }}"
+        CARGO_HOME: "{{ home_dir }}/.cargo"
+        RUSTUP_HOME: "{{ rustup_home }}"
+        PATH: "{{ cargo_bin_dir }}:{{ ansible_env.PATH }}"
+
+    - name: Fail when clang is missing
+      ansible.builtin.assert:
+        that:
+          - clang_check.rc == 0
+        fail_msg: >-
+          clang is required before installing Cargo packages such as tree-sitter-cli.
+          Run playbooks/apt_packages.yml first to install the native build toolchain.
 
     - name: Install Cargo packages
       ansible.builtin.command:
