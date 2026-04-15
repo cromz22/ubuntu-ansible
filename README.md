@@ -15,7 +15,7 @@ This repository targets `localhost` and is intended for setting up a machine wit
 
 - Ubuntu with Ansible installed
 - `sudo` access for playbooks that use `become: true`
-- Internet access for installer-based playbooks such as `nvm`, Bun, Pixi, and `uv`
+- Internet access for external package repositories and installer-based playbooks such as the optional Azure CLI playbook, `nvm`, Bun, Pixi, and `uv`
 - The `community.general` collection for the Snap playbook
 
 ## Usage
@@ -67,3 +67,7 @@ This ordering matters because `playbooks/bun.yml` expects Node.js to already be 
 - `playbooks/uv.yml`: installs `uv` via the official installer and adds `~/.local/bin` to `PATH`
 - `playbooks/snap_packages.yml`: installs configured Snap packages
 - `playbooks/idle.yml`: sets the GNOME idle timeout for the logged-in user session
+
+## Optional Playbooks
+
+- `playbooks/azure_cli.yml`: installs Azure CLI from Microsoft's official APT repository using the [documented Linux setup steps in Microsoft Learn](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux)

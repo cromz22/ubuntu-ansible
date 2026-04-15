@@ -12,6 +12,7 @@
       apt:
         name:
           - build-essential
+          - ca-certificates
           - clang
           - cmake
           - curl
@@ -23,8 +24,10 @@
           - fcitx5-frontend-gtk4
           - fcitx5-mozc
           - git
+          - gnupg
           - htop
           - im-config
+          - lsb-release
           - ripgrep
           - tmux
           - vim

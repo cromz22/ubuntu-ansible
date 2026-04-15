@@ -1,0 +1,48 @@
+# Microsoft Learn reference:
+# https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  vars:
+    azure_cli_keyring_path: /etc/apt/keyrings/microsoft.gpg
+    azure_cli_key_path: /tmp/microsoft.asc
+
+  tasks:
+    - name: Ensure APT keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Detect Debian architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: azure_cli_arch
+      changed_when: false
+
+    - name: Detect Ubuntu codename
+      ansible.builtin.command: lsb_release -cs
+      register: azure_cli_codename
+      changed_when: false
+
+    - name: Download Microsoft package signing key
+      ansible.builtin.get_url:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        dest: "{{ azure_cli_key_path }}"
+        mode: "0644"
+
+    - name: Install Microsoft package signing key
+      ansible.builtin.command:
+        cmd: gpg --dearmor --batch --yes --output {{ azure_cli_keyring_path }} {{ azure_cli_key_path }}
+
+    - name: Configure Azure CLI APT repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ azure_cli_arch.stdout }} signed-by={{ azure_cli_keyring_path }}] https://packages.microsoft.com/repos/azure-cli/ {{ azure_cli_codename.stdout }} main"
+        filename: azure-cli
+        state: present
+        update_cache: true
+
+    - name: Install Azure CLI
+      ansible.builtin.apt:
+        name: azure-cli
+        state: present
