@@ -19,6 +19,22 @@ This repository targets `localhost`. `desktop.yml` sets up a graphical workstati
 - Internet access for external package repositories and installer-based playbooks such as the optional Azure CLI playbook, `nvm`, Bun, Pixi, and `uv`
 - The `community.general` collection for the Snap playbook
 
+## Assumptions
+
+This repository is meant to be easy to modify, but the current defaults assume a particular kind of setup:
+
+- The machine already has the latest stable Ubuntu installed
+- The hostname and primary user account are already configured
+- Ansible is already installed before running these playbooks, whether manually or through another bootstrap step such as cloud-init
+- You are provisioning your own local Ubuntu machine, not a remote host
+- You run Ansible as your normal user and use `sudo` when prompted
+- You are happy to use `zsh` as your default shell. If not, adjust `playbooks/zsh.yml` and any playbooks that update `~/.zshrc`.
+- On desktop systems, you use GNOME and want desktop settings applied in your logged-in session. If not, review `desktop.yml` and the related playbooks described in [playbooks/README.md](./playbooks/README.md).
+- The desktop setup assumes a Japanese keyboard and input environment. If you want different keyboard or input defaults, change `playbooks/xkb.yml` and `playbooks/fcitx5.yml`.
+- The developer tooling reflects the current defaults in this repository, including Rust, Node.js via `nvm`, Bun, Pixi, and `uv`. If you want a different toolset, change `server.yml` or the individual tool playbooks described in [playbooks/README.md](./playbooks/README.md).
+- Some desktop apps are installed by default, currently `slack` and `rclone`. If you want different apps, change `playbooks/snap_packages.yml`.
+- GPU workstation setup is intentionally out of scope. GPU hardware and NVIDIA driver requirements vary by machine, so driver installation should be handled separately. CUDA and cuDNN are also left out so users can choose and manage the versions they need more flexibly, for example with tools such as Pixi.
+
 ## Usage
 
 Run the full setup:
