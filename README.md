@@ -1,15 +1,16 @@
 # ubuntu-ansible
 
-Ansible playbooks for provisioning a local Ubuntu workstation.
+Ansible playbooks for provisioning a local Ubuntu machine as either a desktop workstation or a server.
 
-This repository targets `localhost` and is intended for setting up a machine with baseline packages, system keyboard defaults, `fcitx5` Japanese input, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, `uv`, selected Snap packages, and a GNOME idle timeout.
+This repository targets `localhost`. `desktop.yml` sets up a graphical workstation with baseline packages, keyboard defaults, `fcitx5` Japanese input, `zsh`, Rust via `rustup`, Node.js via `nvm`, Bun, Pixi, `uv`, selected Snap packages, and a GNOME idle timeout. `server.yml` sets up a headless Ubuntu Server with the shared command-line tooling.
 
 ## Structure
 
 - `ansible.cfg`: points Ansible at the local inventory.
 - `inventory/hosts`: defines `localhost` with `ansible_connection=local`.
-- `site.yml`: master playbook that runs the full setup in the expected order.
-- `playbooks/`: standalone playbooks for individual setup tasks.
+- `desktop.yml`: master playbook for Ubuntu Desktop.
+- `server.yml`: master playbook for Ubuntu Server.
+- `playbooks/`: standalone playbooks for individual setup tasks, documented in `playbooks/README.md`.
 
 ## Prerequisites
 
@@ -23,51 +24,49 @@ This repository targets `localhost` and is intended for setting up a machine wit
 Run the full setup:
 
 ```bash
-ansible-playbook site.yml -K
+ansible-playbook desktop.yml -K
 ```
 
-Run a single playbook:
+Run the server setup:
 
 ```bash
-ansible-playbook playbooks/nvm.yml
+ansible-playbook server.yml -K
+```
+
+Run a single playbook (e.g., Azure CLI):
+
+```bash
+ansible-playbook playbooks/azure_cli.yml -K
 ```
 
 For any playbook that uses `become: true`, run Ansible as your normal user and let Ansible prompt for sudo with `-K` when needed.
 
-Do not run `sudo ansible-playbook ...` for the full setup in `site.yml` or for playbooks that also manage user-session state. In this repository that especially applies to `playbooks/xkb.yml`, `playbooks/fcitx5.yml`, and `playbooks/idle.yml`, which update the logged-in user's X11, DBus, or home-directory state and should execute in your user session rather than entirely as root.
+Do not run `sudo ansible-playbook ...` for the full desktop setup in `desktop.yml` or for playbooks that also manage user-session state. In this repository that especially applies to `playbooks/xkb.yml`, `playbooks/fcitx5.yml`, and `playbooks/idle.yml`, which update the logged-in user's X11, DBus, or home-directory state and should execute in your user session rather than entirely as root.
 
-## Playbook Order
+## Included Playbooks
 
-`site.yml` imports playbooks in this order:
+`server.yml` includes:
 
-1. `playbooks/apt_packages.yml`
-2. `playbooks/xkb.yml`
-3. `playbooks/fcitx5.yml`
-4. `playbooks/zsh.yml`
-5. `playbooks/rust.yml`
-6. `playbooks/nvm.yml`
-7. `playbooks/bun.yml`
-8. `playbooks/pixi.yml`
-9. `playbooks/uv.yml`
-10. `playbooks/snap_packages.yml`
-11. `playbooks/idle.yml`
+- `playbooks/apt_packages_base.yml`
+- `playbooks/zsh.yml`
+- `playbooks/rust.yml`
+- `playbooks/nvm.yml`
+- `playbooks/bun.yml`
+- `playbooks/pixi.yml`
+- `playbooks/uv.yml`
 
-This ordering matters because `playbooks/bun.yml` expects Node.js to already be available through `nvm`.
+The main ordering constraint is that `playbooks/bun.yml` runs after `playbooks/nvm.yml` so Node.js is already available.
 
-## Playbook Summary
+`desktop.yml` includes everything in `server.yml`, plus:
 
-- `playbooks/apt_packages.yml`: installs baseline APT packages such as `build-essential`, `clang`, `curl`, `fcitx5`, `fd-find`, `git`, `ripgrep`, `tmux`, `vim`, and `zsh`, ensures `~/.local/bin` is on `PATH`, and exposes Debian's `fdfind` as `~/.local/bin/fd`
-- `playbooks/xkb.yml`: writes `/etc/default/keyboard`, reapplies the system keyboard config, updates the current X11 session with `setxkbmap`, and syncs the GNOME user-level `xkb-options` override when present
-- `playbooks/fcitx5.yml`: selects `fcitx5` with `im-config` and writes `fcitx5` hotkey/profile configuration for Japanese input in the logged-in user's home directory
-- `playbooks/zsh.yml`: ensures `zsh` is installed and sets it as the default shell
-- `playbooks/rust.yml`: installs Rust via `rustup`, adds Cargo to `PATH`, verifies `clang` is available for native Cargo builds, and installs `procs`, `git-delta`, `difftastic`, and `tree-sitter-cli` with `cargo install --locked`
-- `playbooks/nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node LTS
-- `playbooks/bun.yml`: installs Bun, updates `~/.zshrc`, and installs global Bun packages
-- `playbooks/pixi.yml`: installs Pixi and adds it to `PATH`
-- `playbooks/uv.yml`: installs `uv` via the official installer and adds `~/.local/bin` to `PATH`
-- `playbooks/snap_packages.yml`: installs configured Snap packages
-- `playbooks/idle.yml`: sets the GNOME idle timeout for the logged-in user session
+- `playbooks/apt_packages_desktop.yml`
+- `playbooks/xkb.yml`
+- `playbooks/fcitx5.yml`
+- `playbooks/snap_packages.yml`
+- `playbooks/idle.yml`
 
-## Optional Playbooks
+The following playbooks are only meant for standalone usage:
 
-- `playbooks/azure_cli.yml`: installs Azure CLI from Microsoft's official APT repository using the [documented Linux setup steps in Microsoft Learn](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux)
+- `playbooks/azure_cli.yml`
+
+Detailed descriptions for each standalone playbook are in [playbooks/README.md](./playbooks/README.md).
