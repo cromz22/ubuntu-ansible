@@ -26,7 +26,7 @@ Detailed descriptions for each standalone playbook are in [playbooks/README.md](
 
 - Server and Desktop (`server.yml`)
     - Basic packages via apt (`apt_packages_base.yml`)
-    - [Zsh] as the default shell (`zsh.yml`)
+    - [Zsh](https://www.zsh.org/) as the default shell (`zsh.yml`)
     - [nvm](https://github.com/nvm-sh/nvm) as the node version manager (`nvm.yml`) and [Bun](https://bun.sh/) as the JavaScript package manager (`bun.yml`)
         - `nvm.yml` should run before `bun.yml` because bun requires Node.js.
         - OpenAI [Codex CLI](https://developers.openai.com/codex/cli) is installed via bun.
