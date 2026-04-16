@@ -1,0 +1,7 @@
+- import_playbook: playbooks/apt_packages_base.yml
+- import_playbook: playbooks/zsh.yml
+- import_playbook: playbooks/rust.yml
+- import_playbook: playbooks/nvm.yml
+- import_playbook: playbooks/bun.yml
+- import_playbook: playbooks/pixi.yml
+- import_playbook: playbooks/uv.yml

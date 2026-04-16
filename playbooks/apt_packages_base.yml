@@ -8,7 +8,7 @@
     zshrc_path: "{{ home_dir }}/.zshrc"
 
   tasks:
-    - name: Install packages
+    - name: Install common packages
       apt:
         name:
           - build-essential
@@ -18,20 +18,13 @@
           - curl
           - emacs-nox
           - fd-find
-          - fcitx5
-          - fcitx5-config-qt
-          - fcitx5-frontend-gtk3
-          - fcitx5-frontend-gtk4
-          - fcitx5-mozc
           - git
           - gnupg
           - htop
-          - im-config
           - lsb-release
           - ripgrep
           - tmux
           - vim
-          - xclip
           - zsh
         state: present
         update_cache: true

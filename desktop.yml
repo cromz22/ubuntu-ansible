@@ -1,4 +1,5 @@
-- import_playbook: playbooks/apt_packages.yml
+- import_playbook: playbooks/apt_packages_base.yml
+- import_playbook: playbooks/apt_packages_desktop.yml
 - import_playbook: playbooks/xkb.yml
 - import_playbook: playbooks/fcitx5.yml
 - import_playbook: playbooks/zsh.yml

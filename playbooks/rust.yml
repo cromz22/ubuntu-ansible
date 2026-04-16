@@ -68,7 +68,7 @@
           - clang_check.rc == 0
         fail_msg: >-
           clang is required before installing Cargo packages such as tree-sitter-cli.
-          Run playbooks/apt_packages.yml first to install the native build toolchain.
+          Run playbooks/apt_packages_base.yml first to install the native build toolchain.
 
     - name: Install Cargo packages
       ansible.builtin.command:
