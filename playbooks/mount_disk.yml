@@ -1,0 +1,90 @@
+---
+- name: Prepare and mount Azure data disk
+  hosts: all
+  become: true
+
+  vars:
+    disk_device: /dev/sda
+    partition_number: 1
+    partition_label: gpt
+    filesystem_type: ext4
+    mount_point: /data
+
+  tasks:
+    - name: Show selected disk
+      ansible.builtin.debug:
+        msg: "Using disk {{ disk_device }}. Verify with lsblk before running."
+
+    - name: Get root source device
+      ansible.builtin.command: findmnt -n -o SOURCE /
+      register: root_device
+      changed_when: false
+
+    - name: Refuse to use the root disk
+      ansible.builtin.fail:
+        msg: "Refusing to use root disk: {{ root_device.stdout }}"
+      when: disk_device.startswith(root_device.stdout | regex_replace('p?[0-9]+$', ''))
+
+    - name: Ensure partition exists
+      community.general.parted:
+        device: "{{ disk_device }}"
+        label: "{{ partition_label }}"
+        number: "{{ partition_number }}"
+        state: present
+        part_start: 1MiB
+        part_end: 100%
+
+    - name: Derive partition device path
+      ansible.builtin.set_fact:
+        partition_device: >-
+          {{
+            disk_device ~
+            ('p' if (disk_device | regex_search('nvme')) else '') ~
+            partition_number
+          }}
+
+    - name: Refresh partition table
+      ansible.builtin.command: partprobe {{ disk_device }}
+      changed_when: false
+
+    - name: Wait for udev to settle
+      ansible.builtin.command: udevadm settle
+      changed_when: false
+
+    - name: Check current filesystem type
+      ansible.builtin.command: blkid -o value -s TYPE {{ partition_device }}
+      register: fs_type
+      failed_when: false
+      changed_when: false
+
+    - name: Debug detected filesystem type
+      ansible.builtin.debug:
+        msg: "Detected filesystem type on {{ partition_device }}: '{{ fs_type.stdout | trim }}'"
+
+    - name: Create filesystem if missing
+      ansible.builtin.command: mkfs.{{ filesystem_type }} -F {{ partition_device }}
+      when: fs_type.stdout | trim == ""
+
+    - name: Read UUID
+      ansible.builtin.command: blkid -s UUID -o value {{ partition_device }}
+      register: disk_uuid
+      changed_when: false
+
+    - name: Fail if UUID is empty
+      ansible.builtin.fail:
+        msg: "No UUID found on {{ partition_device }} after filesystem step."
+      when: disk_uuid.stdout | trim == ""
+
+    - name: Ensure mount point exists
+      ansible.builtin.file:
+        path: "{{ mount_point }}"
+        state: directory
+        mode: "0755"
+
+    - name: Mount and persist in fstab
+      ansible.posix.mount:
+        path: "{{ mount_point }}"
+        src: "UUID={{ disk_uuid.stdout }}"
+        fstype: "{{ filesystem_type }}"
+        opts: defaults,nofail
+        state: mounted
