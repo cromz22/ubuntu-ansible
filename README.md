@@ -17,12 +17,12 @@ Ansible playbooks for provisioning a local Ubuntu machine as either a desktop wo
 - Local machine setup, not a remote host
 - `sudo` access (for playbooks that use `become: true`)
 - Internet access (for external package repositories and installer-based playbooks)
-- [Ansible](https://github.com/ansible/ansible) installed on the machine (Install before running the playbooks e.g. manually via apt)
+- [Ansible](https://github.com/ansible/ansible) installed on the machine (Install before running the playbooks, e.g. manually via apt)
 
 ## What is configured / installed
 
 The following configurations and installations are done. If they don't match your preference, change the corresponding yaml files.
-Detailed descriptions for each standalone playbook are in [playbooks/README.md](./playbooks/README.md).
+Detailed descriptions of each standalone playbook are in [playbooks/README.md](./playbooks/README.md).
 
 - Server and Desktop (`server.yml`)
     - Basic packages via apt (`apt_packages_base.yml`)
@@ -31,7 +31,7 @@ Detailed descriptions for each standalone playbook are in [playbooks/README.md](
         - `nvm.yml` should run before `bun.yml` because bun requires Node.js.
         - OpenAI [Codex CLI](https://developers.openai.com/codex/cli) is installed via bun.
     - [Rust](https://rust-lang.org/) language and some useful Rust-made CLI tools (`rust.yml`)
-    - [Pixi](https://pixi.prefix.dev/latest/) for package management of project that mainly use Python (`pixi.yml`)
+    - [Pixi](https://pixi.prefix.dev/latest/) for package management of projects that mainly use Python (`pixi.yml`)
     - [uv](https://docs.astral.sh/uv/) for package management of projects that use only Python (`uv.yml`)
 
 - Desktop (`desktop.yml`)
