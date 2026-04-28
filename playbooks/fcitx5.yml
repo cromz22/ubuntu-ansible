@@ -64,7 +64,7 @@
           [Groups/0]
           Name=Default
           Default Layout=jp
-          DefaultIM=keyboard-jp
+          DefaultIM=mozc
 
           [Groups/0/Items/0]
           Name=keyboard-jp
@@ -76,3 +76,20 @@
 
           [GroupOrder]
           0=Default
+
+    - name: Restart fcitx5 if running
+      become_user: "{{ login_user }}"
+      ansible.builtin.command:
+        argv:
+          - fcitx5-remote
+          - -r
+      environment:
+        HOME: "{{ home_dir }}"
+        DISPLAY: "{{ lookup('env', 'DISPLAY') }}"
+        XAUTHORITY: "{{ lookup('env', 'XAUTHORITY') }}"
+        DBUS_SESSION_BUS_ADDRESS: "{{ lookup('env', 'DBUS_SESSION_BUS_ADDRESS') }}"
+        XDG_RUNTIME_DIR: "{{ lookup('env', 'XDG_RUNTIME_DIR') }}"
+      changed_when: false
+      failed_when: false
+      when:
+        - lookup('env', 'DISPLAY') | length > 0
