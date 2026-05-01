@@ -4,7 +4,6 @@
 
   vars:
     snap_packages:
-      - slack
       - rclone
 
   tasks:

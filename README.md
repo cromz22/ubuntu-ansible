@@ -35,10 +35,11 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
     - [uv](https://docs.astral.sh/uv/) for package management of projects that use only Python (`uv.yml`)
 
 - Desktop (`desktop.yml`)
-    - Additional desktop packages via apt (`apt_packages_base.yml`)
+    - Additional desktop packages via apt (`apt_packages_desktop.yml`)
+        - [Slack](https://slack.com/) is installed from Slack's official `.deb` package.
     - A Japanese keyboard and input environment, with preferences of Ctrl and Caps Lock keys swapped, and using 変換 for IME on and 無変換 for IME off (`xkb.yml` and `fcitx5.yml`)
     - [Snap](https://snapcraft.io/) to manage desktop apps (`snap_packages.yml`)
-        - [Slack](https://slack.com/) and [RCLONE](https://rclone.org/) are installed via snap.
+        - [RCLONE](https://rclone.org/) is installed via snap.
     - GNOME idle timeout (`idle.yml`)
 
 - Standalone script

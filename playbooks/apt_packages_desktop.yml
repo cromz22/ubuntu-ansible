@@ -2,6 +2,9 @@
   become: true
   gather_facts: false
 
+  vars:
+    slack_deb_url: https://downloads.slack-edge.com/desktop-releases/linux/x64/4.47.69/slack-desktop-4.47.69-amd64.deb
+
   tasks:
     - name: Install desktop-only packages
       apt:
@@ -15,3 +18,13 @@
           - xclip
         state: present
         update_cache: true
+
+    - name: Remove Slack snap package
+      community.general.snap:
+        name: slack
+        state: absent
+
+    - name: Install Slack from official deb package
+      apt:
+        deb: "{{ slack_deb_url }}"
+        state: present

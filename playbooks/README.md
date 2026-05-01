@@ -5,7 +5,7 @@ Standalone playbook reference.
 ## Summary
 
 - `apt_packages_base.yml`: installs shared APT packages and prepares `~/.local/bin`, including an `fd` symlink for Debian's `fdfind`
-- `apt_packages_desktop.yml`: installs desktop-only APT packages for input methods and clipboard support
+- `apt_packages_desktop.yml`: installs desktop-only APT packages for input methods and clipboard support, plus Slack from Slack's official `.deb` package
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `fcitx5.yml`: configures `fcitx5` and its Japanese input profile in the user's home directory
