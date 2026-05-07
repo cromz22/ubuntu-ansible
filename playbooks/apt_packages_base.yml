@@ -11,6 +11,7 @@
     - name: Install common packages
       apt:
         name:
+          - bubblewrap
           - build-essential
           - ca-certificates
           - clang
