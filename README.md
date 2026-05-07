@@ -44,9 +44,9 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
-    - `azure_cli.yml`
-    - `mount_disk.yml`
-    - `nvidia_driver.yml`
+        - `azure_cli.yml`
+        - `mount_disk.yml`
+        - `nvidia_driver.yml`
 
 - GPU workstation setup
     - GPU hardware and NVIDIA driver requirements vary by machine, so the driver installation should be handled with care. CUDA and cuDNN are intentionally left out the scope of this repository, so that the users can choose and manage the versions they need flexibly, e.g. with Pixi.
