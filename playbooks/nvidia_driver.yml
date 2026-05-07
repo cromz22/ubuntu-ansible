@@ -1,0 +1,77 @@
+---
+- name: Install NVIDIA driver from official runfile with DKMS
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    nvidia_driver_version: "595.58.03"
+    nvidia_runfile: "NVIDIA-Linux-x86_64-{{ nvidia_driver_version }}.run"
+    nvidia_download_url: "https://us.download.nvidia.com/XFree86/Linux-x86_64/{{ nvidia_driver_version }}/{{ nvidia_runfile }}"
+    nvidia_download_path: "/var/tmp/{{ nvidia_runfile }}"
+
+  tasks:
+    - name: Install build dependencies
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - dkms
+          - "linux-headers-{{ ansible_kernel }}"
+          - pkg-config
+          - libglvnd-dev
+        state: present
+        update_cache: true
+
+    - name: Check installed NVIDIA kernel module version
+      ansible.builtin.command: modinfo -F version nvidia
+      register: nvidia_modinfo_version
+      changed_when: false
+      failed_when: false
+
+    - name: Check whether NVIDIA module can load
+      ansible.builtin.command: modprobe -n nvidia
+      register: nvidia_modprobe_check
+      changed_when: false
+      failed_when: false
+
+    - name: Download NVIDIA runfile
+      ansible.builtin.get_url:
+        url: "{{ nvidia_download_url }}"
+        dest: "{{ nvidia_download_path }}"
+        mode: "0755"
+      when: >
+        nvidia_modinfo_version.rc != 0 or
+        nvidia_modinfo_version.stdout.strip() != nvidia_driver_version or
+        nvidia_modprobe_check.rc != 0
+
+    - name: Install NVIDIA driver with DKMS
+      ansible.builtin.command:
+        cmd: >
+          {{ nvidia_download_path }}
+          --silent
+          --dkms
+          --no-questions
+          --accept-license
+      register: nvidia_install
+      when: >
+        nvidia_modinfo_version.rc != 0 or
+        nvidia_modinfo_version.stdout.strip() != nvidia_driver_version or
+        nvidia_modprobe_check.rc != 0
+
+    - name: Run depmod
+      ansible.builtin.command: depmod -a
+      changed_when: false
+
+    - name: Update initramfs
+      ansible.builtin.command: update-initramfs -u
+      changed_when: true
+      when: nvidia_install is changed
+
+    - name: Verify installed NVIDIA module version
+      ansible.builtin.command: modinfo -F version nvidia
+      register: nvidia_final_version
+      changed_when: false
+
+    - name: Show installed NVIDIA module version
+      ansible.builtin.debug:
+        msg: "Installed NVIDIA kernel module version: {{ nvidia_final_version.stdout }}"
