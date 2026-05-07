@@ -1,0 +1,97 @@
+- hosts: localhost
+  become: false
+  gather_facts: true
+
+  vars:
+    home_dir: "{{ lookup('env', 'HOME') }}"
+    bun_bin_dir: "{{ home_dir }}/.bun/bin"
+    apparmor_bwrap_profile_src: /usr/share/apparmor/extra-profiles/bwrap-userns-restrict
+    apparmor_bwrap_profile_dest: /etc/apparmor.d/bwrap-userns-restrict
+    codex_userns_sysctl_conf: /etc/sysctl.d/99-codex-bwrap-userns.conf
+
+  tasks:
+    - name: Check that Codex CLI is available
+      ansible.builtin.shell: |
+        export PATH="{{ bun_bin_dir }}:$PATH"
+        command -v codex
+      args:
+        executable: /bin/bash
+      register: codex_check
+      changed_when: false
+      failed_when: false
+
+    - name: Require Codex CLI before configuring Codex sandbox
+      ansible.builtin.fail:
+        msg: "Codex CLI is not available. Run playbooks/bun.yml first so @openai/codex is installed via Bun."
+      when: codex_check.rc != 0
+
+    - name: Install Codex sandbox packages
+      become: true
+      ansible.builtin.apt:
+        name:
+          - apparmor
+          - apparmor-profiles
+          - apparmor-utils
+          - bubblewrap
+        state: present
+        update_cache: true
+
+    - name: Check for Ubuntu 24.04 bwrap AppArmor profile source
+      become: true
+      ansible.builtin.stat:
+        path: "{{ apparmor_bwrap_profile_src }}"
+      register: bwrap_profile_src
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_distribution_version is version("24.04", ">=")
+        - ansible_distribution_version is version("25.04", "<")
+
+    - name: Install Ubuntu 24.04 bwrap AppArmor profile
+      become: true
+      ansible.builtin.copy:
+        src: "{{ apparmor_bwrap_profile_src }}"
+        dest: "{{ apparmor_bwrap_profile_dest }}"
+        remote_src: true
+        mode: "0644"
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_distribution_version is version("24.04", ">=")
+        - ansible_distribution_version is version("25.04", "<")
+        - bwrap_profile_src.stat.exists
+
+    - name: Load Ubuntu 24.04 bwrap AppArmor profile
+      become: true
+      ansible.builtin.command:
+        cmd: "apparmor_parser -r {{ apparmor_bwrap_profile_dest }}"
+      changed_when: false
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_distribution_version is version("24.04", ">=")
+        - ansible_distribution_version is version("25.04", "<")
+        - bwrap_profile_src.stat.exists
+
+    - name: Persist Codex bwrap user namespace sysctl fallback
+      become: true
+      ansible.builtin.copy:
+        dest: "{{ codex_userns_sysctl_conf }}"
+        content: |
+          # Allow Codex/bubblewrap to create the user namespace it needs when the
+          # Ubuntu 24.04 bwrap AppArmor profile is unavailable.
+          kernel.apparmor_restrict_unprivileged_userns=0
+        mode: "0644"
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_distribution_version is version("24.04", ">=")
+        - ansible_distribution_version is version("25.04", "<")
+        - not bwrap_profile_src.stat.exists
+
+    - name: Apply Codex bwrap user namespace sysctl fallback
+      become: true
+      ansible.builtin.command:
+        cmd: sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      changed_when: false
+      when:
+        - ansible_distribution == "Ubuntu"
+        - ansible_distribution_version is version("24.04", ">=")
+        - ansible_distribution_version is version("25.04", "<")
+        - not bwrap_profile_src.stat.exists

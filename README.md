@@ -30,6 +30,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
     - [nvm](https://github.com/nvm-sh/nvm) as the node version manager (`nvm.yml`) and [Bun](https://bun.sh/) as the JavaScript package manager (`bun.yml`)
         - `nvm.yml` should run before `bun.yml` because bun requires Node.js.
         - OpenAI [Codex CLI](https://developers.openai.com/codex/cli) is installed via bun.
+    - OpenAI Codex CLI setup checks and Linux sandbox prerequisites (`codex.yml`)
     - [Rust](https://rust-lang.org/) language and some useful Rust-made CLI tools (`rust.yml`)
     - [Pixi](https://pixi.prefix.dev/latest/) for package management of projects that mainly use Python (`pixi.yml`)
     - [uv](https://docs.astral.sh/uv/) for package management of projects that use only Python (`uv.yml`)

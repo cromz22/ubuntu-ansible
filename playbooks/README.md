@@ -8,6 +8,7 @@ Standalone playbook reference.
 - `apt_packages_desktop.yml`: installs desktop-only APT packages for input methods and clipboard support, plus Slack from Slack's official `.deb` package
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
+- `codex.yml`: checks that the Codex CLI is available and installs Linux sandbox prerequisites, including `bubblewrap`; on Ubuntu 24.04 it loads the `bwrap` AppArmor profile when available, otherwise it applies the Codex-documented user namespace sysctl fallback
 - `fcitx5.yml`: configures `fcitx5` and its Japanese input profile in the user's home directory
 - `idle.yml`: sets the GNOME idle timeout for the current user session
 - `mount_disk.yml`: prepares a selected disk with a partition and filesystem, mounts it, and persists it in `/etc/fstab`
