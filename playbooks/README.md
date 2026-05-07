@@ -10,6 +10,8 @@ Standalone playbook reference.
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `fcitx5.yml`: configures `fcitx5` and its Japanese input profile in the user's home directory
 - `idle.yml`: sets the GNOME idle timeout for the current user session
+- `mount_disk.yml`: prepares a selected disk with a partition and filesystem, mounts it, and persists it in `/etc/fstab`
+- `nvidia_driver.yml`: installs the configured NVIDIA driver from the official runfile with DKMS support
 - `nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node.js LTS
 - `pixi.yml`: installs Pixi and adds it to `PATH`
 - `rust.yml`: installs Rust with `rustup`, adds Cargo to `PATH`, and installs configured Cargo tools

@@ -42,10 +42,26 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
         - [RCLONE](https://rclone.org/) is installed via snap.
     - GNOME idle timeout (`idle.yml`)
 
-- Standalone script
-    - `azure_cli.yml` installs the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/).
+- Standalone playbooks
+    - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
+    - `azure_cli.yml`
+    - `mount_disk.yml`
+    - `nvidia_driver.yml`
 
-- GPU workstation setup is intentionally out of scope. GPU hardware and NVIDIA driver requirements vary by machine, so driver installation should be handled separately. CUDA and cuDNN are also left out so users can choose and manage the versions they need more flexibly, e.g. with Pixi.
+- GPU workstation setup
+    - GPU hardware and NVIDIA driver requirements vary by machine, so the driver installation should be handled with care. CUDA and cuDNN are intentionally left out the scope of this repository, so that the users can choose and manage the versions they need flexibly, e.g. with Pixi.
+
+    - NVIDIA driver installation steps
+
+        1. Find out the suitable nvidia driver version for your device through manual search: https://www.nvidia.com/en-us/drivers/
+        1. Edit driver version in `nvidia_driver.yml`
+        1. Switch to multi-user target to disable GUI:
+
+            ```
+            sudo systemctl isolate multi-user.target
+            ```
+
+        1. Run `nvidia_driver.yml` with `-K`
 
 ## Usage
 
@@ -61,7 +77,7 @@ Run the desktop setup:
 ansible-playbook desktop.yml -K
 ```
 
-Run a single playbook (e.g., Azure CLI):
+Run a standalone playbook (e.g., Azure CLI):
 
 ```bash
 ansible-playbook playbooks/azure_cli.yml -K
