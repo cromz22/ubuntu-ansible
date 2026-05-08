@@ -51,49 +51,70 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
         - `mount_disk.yml`
         - `nvidia_driver.yml`
 
-- GPU workstation setup
-    - GPU hardware and NVIDIA driver requirements vary by machine, so the driver installation should be handled with care. CUDA and cuDNN are intentionally left out the scope of this repository, so that the users can choose and manage the versions they need flexibly, e.g. with Pixi.
-
-    - NVIDIA driver installation steps
-
-        1. Find out the suitable nvidia driver version for your device through manual search: https://www.nvidia.com/en-us/drivers/
-        1. Edit driver version in `nvidia_driver.yml`
-        1. Switch to multi-user target to disable GUI:
-
-            ```
-            sudo systemctl isolate multi-user.target
-            ```
-
-        1. Run `nvidia_driver.yml` with `-K`
-
 ## Usage
 
-Run the server setup:
+### Basic server setup
 
 ```bash
 ansible-playbook server.yml -K
 ```
 
-Run the desktop setup:
+### Basic desktop setup
 
 ```bash
 ansible-playbook desktop.yml -K
 ```
 
-Run a standalone playbook (e.g., Azure CLI):
+### GPU workstation setup
+
+- GPU hardware and NVIDIA driver requirements vary by machine, so the driver installation should be handled with care. CUDA and cuDNN are intentionally left out the scope of this repository, so that the users can choose and manage the versions they need flexibly, e.g. with Pixi.
+
+- NVIDIA driver installation steps
+
+    1. Find out the suitable nvidia driver version for your device through manual search: https://www.nvidia.com/en-us/drivers/
+    1. Edit driver version in `nvidia_driver.yml`
+    1. Switch to multi-user target to disable GUI:
+
+        ```
+        sudo systemctl isolate multi-user.target
+        ```
+
+    1. Run `nvidia_driver.yml`
+
+        ```
+        ansible-playbook playbooks/nvidia_driver.yml -K
+        ```
+
+- Additionally, if you would like to use docker with GPU, install docker and set it up for GPU.
+
+    - Install docker (This is not related to GPU, so you can run this alone if you simply want to use docker):
+
+        ```
+        ansible-playbook playbooks/docker.yml -K
+        ```
+
+    - After Docker setup, log out and back in, or start a new login shell (`exec -l zsh`), before running `docker` without `sudo`.
+
+    - Set it up for GPU:
+
+        ```
+        ansible-playbook playbooks/nvidia_docker.yml -K
+        ```
+
+### Azure CLI setup (Run on local)
 
 ```bash
 ansible-playbook playbooks/azure_cli.yml -K
 ```
 
-Run the Docker Engine setup:
+### Azure disk setup (Run on remote)
 
 ```bash
-ansible-playbook playbooks/docker.yml -K
+ansible-playbook playbooks/mount_disk.yml -K
 ```
 
-After Docker setup, log out and back in, or start a new login shell, before running `docker` without `sudo`.
+### Notes
 
-For any playbook that uses `become: true`, run Ansible as your normal user and let Ansible prompt for sudo with `-K` when needed.
-Do not run `sudo ansible-playbook ...` for the full desktop setup in `desktop.yml` or for playbooks that also manage user-session state (specifically `xkb.yml`, `fcitx5.yml`, and `idle.yml`).
+For any playbook that uses `become: true`, run Ansible as the normal user and let Ansible prompt for sudo with `-K` when needed.
+Do not run `sudo ansible-playbook ...` for the full desktop setup in `desktop.yml` or for playbooks that also manage user-session state.
 If you do so, that will change the settings for the root user, not the normal user.
