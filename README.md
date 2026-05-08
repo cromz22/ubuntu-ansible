@@ -47,6 +47,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
         - `azure_cli.yml`
+        - `docker.yml`
         - `mount_disk.yml`
         - `nvidia_driver.yml`
 
@@ -84,6 +85,14 @@ Run a standalone playbook (e.g., Azure CLI):
 ```bash
 ansible-playbook playbooks/azure_cli.yml -K
 ```
+
+Run the Docker Engine setup:
+
+```bash
+ansible-playbook playbooks/docker.yml -K
+```
+
+After Docker setup, log out and back in, or start a new login shell, before running `docker` without `sudo`.
 
 For any playbook that uses `become: true`, run Ansible as your normal user and let Ansible prompt for sudo with `-K` when needed.
 Do not run `sudo ansible-playbook ...` for the full desktop setup in `desktop.yml` or for playbooks that also manage user-session state (specifically `xkb.yml`, `fcitx5.yml`, and `idle.yml`).

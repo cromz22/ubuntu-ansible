@@ -9,6 +9,7 @@ Standalone playbook reference.
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `codex.yml`: checks that the Codex CLI is available and installs Linux sandbox prerequisites, including `bubblewrap`; on Ubuntu 24.04 it loads the `bwrap` AppArmor profile when available, otherwise it applies the Codex-documented user namespace sysctl fallback
+- `docker.yml`: adds Docker's official APT repository, installs Docker Engine with Buildx and Compose plugins, starts the Docker service, and adds the invoking user to the `docker` group
 - `fcitx5.yml`: configures the fcitx5 IME layer, including the Japanese input profile, autostart, and IME hotkeys in the user's home directory
 - `idle.yml`: sets the GNOME idle timeout for the current user session
 - `mount_disk.yml`: prepares a selected disk with a partition and filesystem, mounts it, and persists it in `/etc/fstab`
