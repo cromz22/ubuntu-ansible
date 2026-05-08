@@ -9,7 +9,7 @@ Standalone playbook reference.
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `codex.yml`: checks that the Codex CLI is available and installs Linux sandbox prerequisites, including `bubblewrap`; on Ubuntu 24.04 it loads the `bwrap` AppArmor profile when available, otherwise it applies the Codex-documented user namespace sysctl fallback
-- `fcitx5.yml`: configures `fcitx5` and its Japanese input profile in the user's home directory
+- `fcitx5.yml`: configures the fcitx5 IME layer, including the Japanese input profile, autostart, and IME hotkeys in the user's home directory
 - `idle.yml`: sets the GNOME idle timeout for the current user session
 - `mount_disk.yml`: prepares a selected disk with a partition and filesystem, mounts it, and persists it in `/etc/fstab`
 - `nvidia_driver.yml`: installs the configured NVIDIA driver from the official runfile with DKMS support
@@ -18,5 +18,5 @@ Standalone playbook reference.
 - `rust.yml`: installs Rust with `rustup`, adds Cargo to `PATH`, and installs configured Cargo tools
 - `snap_packages.yml`: installs the configured Snap packages
 - `uv.yml`: installs `uv` and adds `~/.local/bin` to `PATH`
-- `xkb.yml`: writes keyboard defaults and applies keyboard settings to console and desktop session state
+- `xkb.yml`: configures the XKB keyboard layer, including the Japanese keyboard layout and Ctrl/Caps Lock swap for console and desktop session state
 - `zsh.yml`: ensures `zsh` is installed and sets it as the default shell

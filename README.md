@@ -38,7 +38,8 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 - Desktop (`desktop.yml`)
     - Additional desktop packages via apt (`apt_packages_desktop.yml`)
         - [Slack](https://slack.com/) is installed from Slack's official `.deb` package.
-    - A Japanese keyboard and input environment, with preferences of Ctrl and Caps Lock keys swapped, and using 変換 for IME on and 無変換 for IME off (`xkb.yml` and `fcitx5.yml`)
+    - Japanese keyboard layout and physical key mapping via XKB, including Ctrl and Caps Lock swapped (`xkb.yml`)
+    - Japanese IME setup via fcitx5, using 半角/全角 to toggle IME, 変換 for IME on, and 無変換 for IME off (`fcitx5.yml`)
     - [Snap](https://snapcraft.io/) to manage desktop apps (`snap_packages.yml`)
         - [RCLONE](https://rclone.org/) is installed via snap.
     - GNOME idle timeout (`idle.yml`)
