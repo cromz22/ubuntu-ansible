@@ -3,6 +3,7 @@
   gather_facts: false
 
   vars:
+    slack_deb_version: 4.47.69
     slack_deb_url: https://downloads.slack-edge.com/desktop-releases/linux/x64/4.47.69/slack-desktop-4.47.69-amd64.deb
 
   tasks:
@@ -24,7 +25,16 @@
         name: slack
         state: absent
 
+    - name: Check installed Slack deb package version
+      command: dpkg-query -W -f=${Version} slack-desktop
+      register: slack_deb_installed
+      changed_when: false
+      failed_when: false
+
     - name: Install Slack from official deb package
       apt:
         deb: "{{ slack_deb_url }}"
         state: present
+      when: >
+        slack_deb_installed.rc != 0 or
+        slack_deb_installed.stdout is version(slack_deb_version, '<')
