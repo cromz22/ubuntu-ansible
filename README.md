@@ -65,6 +65,12 @@ ansible-playbook server.yml -K
 ansible-playbook desktop.yml -K
 ```
 
+### Installing networking packages (Optional)
+
+```bash
+ansible-playbook playbooks/apt_packages_network.yml -K
+```
+
 ### GPU workstation setup
 
 - GPU hardware and NVIDIA driver requirements vary by machine, so the driver installation should be handled with care. CUDA and cuDNN are intentionally left out the scope of this repository, so that the users can choose and manage the versions they need flexibly, e.g. with Pixi.

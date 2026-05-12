@@ -1,0 +1,18 @@
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install networking packages
+      apt:
+        name:
+          - arp-scan
+          - dnsutils
+          - iperf3
+          - net-tools
+          - nmap
+          - tcpdump
+          - traceroute
+          - whois
+        state: present
+        update_cache: true

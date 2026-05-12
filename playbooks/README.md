@@ -6,6 +6,7 @@ Standalone playbook reference.
 
 - `apt_packages_base.yml`: installs shared APT packages and prepares `~/.local/bin`, including an `fd` symlink for Debian's `fdfind`
 - `apt_packages_desktop.yml`: installs desktop-only APT packages for input methods and clipboard support, plus Slack from Slack's official `.deb` package
+- `apt_packages_network.yml`: installs common networking and diagnostic APT packages
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `codex.yml`: checks that the Codex CLI is available and installs Linux sandbox prerequisites, including `bubblewrap`; on Ubuntu 24.04 it loads the `bwrap` AppArmor profile when available, otherwise it applies the Codex-documented user namespace sysctl fallback
