@@ -37,6 +37,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 
 - Desktop (`desktop.yml`)
     - Additional desktop packages via apt (`apt_packages_desktop.yml`)
+        - [WezTerm](https://wezterm.org/) is installed from WezTerm's official APT repository.
         - [Slack](https://slack.com/) is installed from Slack's official `.deb` package.
     - Japanese keyboard layout and physical key mapping via XKB, including Ctrl and Caps Lock swapped (`xkb.yml`)
     - Japanese IME setup via fcitx5, using 半角/全角 to toggle IME, 変換 for IME on, and 無変換 for IME off (`fcitx5.yml`)
