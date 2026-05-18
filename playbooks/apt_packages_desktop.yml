@@ -5,6 +5,8 @@
   vars:
     slack_deb_version: 4.47.69
     slack_deb_url: https://downloads.slack-edge.com/desktop-releases/linux/x64/4.47.69/slack-desktop-4.47.69-amd64.deb
+    zoom_deb_url: https://zoom.us/client/latest/zoom_amd64.deb
+    zoom_deb_path: /tmp/zoom_amd64.deb
     wezterm_keyring_source_path: /tmp/wezterm-fury.gpg.key
     wezterm_keyring_path: /usr/share/keyrings/wezterm-fury.gpg
 
@@ -31,6 +33,19 @@
       when: >
         slack_deb_installed.rc != 0 or
         slack_deb_installed.stdout is version(slack_deb_version, '<')
+
+    - name: Download latest Zoom deb package
+      get_url:
+        url: "{{ zoom_deb_url }}"
+        dest: "{{ zoom_deb_path }}"
+        mode: "0644"
+        force: true
+      changed_when: false
+
+    - name: Install Zoom from official deb package
+      apt:
+        deb: "{{ zoom_deb_path }}"
+        state: present
 
     - name: Download WezTerm package signing key
       get_url:
