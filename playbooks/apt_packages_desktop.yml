@@ -18,6 +18,20 @@
         state: present
         update_cache: true
 
+    - name: Check installed Slack deb package version
+      command: dpkg-query -W -f=${Version} slack-desktop
+      register: slack_deb_installed
+      changed_when: false
+      failed_when: false
+
+    - name: Install Slack from official deb package
+      apt:
+        deb: "{{ slack_deb_url }}"
+        state: present
+      when: >
+        slack_deb_installed.rc != 0 or
+        slack_deb_installed.stdout is version(slack_deb_version, '<')
+
     - name: Download WezTerm package signing key
       get_url:
         url: https://apt.fury.io/wez/gpg.key
@@ -49,6 +63,11 @@
         state: present
         update_cache: true
 
+    - name: Install WezTerm
+      apt:
+        name: wezterm
+        state: present
+
     - name: Install desktop-only packages
       apt:
         name:
@@ -58,25 +77,5 @@
           - fcitx5-frontend-gtk4
           - fcitx5-mozc
           - im-config
-          - wezterm
           - xclip
         state: present
-
-    - name: Remove Slack snap package
-      community.general.snap:
-        name: slack
-        state: absent
-
-    - name: Check installed Slack deb package version
-      command: dpkg-query -W -f=${Version} slack-desktop
-      register: slack_deb_installed
-      changed_when: false
-      failed_when: false
-
-    - name: Install Slack from official deb package
-      apt:
-        deb: "{{ slack_deb_url }}"
-        state: present
-      when: >
-        slack_deb_installed.rc != 0 or
-        slack_deb_installed.stdout is version(slack_deb_version, '<')
