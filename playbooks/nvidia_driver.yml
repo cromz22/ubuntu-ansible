@@ -9,6 +9,16 @@
     nvidia_runfile: "NVIDIA-Linux-x86_64-{{ nvidia_driver_version }}.run"
     nvidia_download_url: "https://us.download.nvidia.com/XFree86/Linux-x86_64/{{ nvidia_driver_version }}/{{ nvidia_runfile }}"
     nvidia_download_path: "/var/tmp/{{ nvidia_runfile }}"
+    nvidia_apt_driver_package_patterns:
+      - nvidia-driver-*
+      - nvidia-dkms-*
+      - nvidia-kernel-*
+      - nvidia-firmware-*
+      - libnvidia-*
+      - nvidia-compute-utils-*
+      - nvidia-utils-*
+      - xserver-xorg-video-nvidia-*
+    nvidia_apt_driver_package_exclude_regex: '^(lib)?nvidia-container'
 
   tasks:
     - name: Install build dependencies
@@ -21,6 +31,32 @@
           - libglvnd-dev
         state: present
         update_cache: true
+
+    - name: Find installed apt-managed NVIDIA driver packages
+      ansible.builtin.command:
+        argv: "{{ ['dpkg-query', '-W', '-f=${binary:Package}\\t${db:Status-Abbrev}\\n'] + nvidia_apt_driver_package_patterns }}"
+      register: nvidia_apt_driver_packages_query
+      changed_when: false
+      failed_when: false
+
+    - name: Select apt-managed NVIDIA driver packages to hold
+      ansible.builtin.set_fact:
+        nvidia_apt_driver_packages_to_hold: >-
+          {{
+            nvidia_apt_driver_packages_query.stdout_lines
+            | select('search', '\tii\s*$')
+            | map('regex_replace', '\tii\s*$', '')
+            | map('regex_replace', ':[^:]+$', '')
+            | reject('search', nvidia_apt_driver_package_exclude_regex)
+            | unique
+            | list
+          }}
+
+    - name: Hold apt-managed NVIDIA driver packages
+      ansible.builtin.dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      loop: "{{ nvidia_apt_driver_packages_to_hold }}"
 
     - name: Check installed NVIDIA kernel module version
       ansible.builtin.command: modinfo -F version nvidia

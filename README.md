@@ -93,6 +93,23 @@ ansible-playbook playbooks/apt_packages_network.yml -K
         ansible-playbook playbooks/nvidia_driver.yml -K
         ```
 
+    The playbook installs the driver from NVIDIA's official runfile and marks installed apt-managed NVIDIA driver packages as held, so `apt upgrade` does not replace driver components managed by the runfile. NVIDIA Container Toolkit packages are not held.
+
+    After running the playbook, you can confirm the held packages:
+
+        ```
+        apt-mark showhold
+        ```
+
+    You can then run normal apt maintenance:
+
+        ```
+        sudo apt update
+        sudo apt upgrade
+        ```
+
+    Before confirming an upgrade, check that apt is not proposing to install or upgrade Ubuntu's `nvidia-driver-*`, `nvidia-dkms-*`, `nvidia-kernel-*`, `nvidia-firmware-*`, or `libnvidia-*` driver packages.
+
 - Additionally, if you would like to use docker with GPU, install docker and set it up for GPU.
 
     - Install docker (This is not related to GPU, so you can run this alone if you simply want to use docker):

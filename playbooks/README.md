@@ -14,7 +14,7 @@ Standalone playbook reference.
 - `fcitx5.yml`: configures the fcitx5 IME layer, including the Japanese input profile, autostart, and IME hotkeys in the user's home directory
 - `idle.yml`: sets the GNOME idle timeout for the current user session
 - `mount_disk.yml`: prepares a selected disk with a partition and filesystem, mounts it, and persists it in `/etc/fstab`
-- `nvidia_driver.yml`: installs the configured NVIDIA driver from the official runfile with DKMS support
+- `nvidia_driver.yml`: installs the configured NVIDIA driver from the official runfile with DKMS support, and holds installed apt-managed NVIDIA driver packages so apt upgrades do not replace runfile-managed driver components
 - `nvidia_docker.yml`: installs NVIDIA Container Toolkit and configures Docker to run GPU containers
 - `nvm.yml`: installs `nvm`, updates `~/.zshrc`, and installs the current Node.js LTS
 - `pixi.yml`: installs Pixi and adds it to `PATH`
