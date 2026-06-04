@@ -1,0 +1,53 @@
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  vars:
+    ssh_allowed_cidrs:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - fc00::/7
+
+  tasks:
+    - name: Install OpenSSH server and firewall
+      apt:
+        name:
+          - openssh-server
+          - ufw
+        state: present
+        update_cache: true
+
+    - name: Ensure SSH service is enabled and running
+      service:
+        name: ssh
+        state: started
+        enabled: true
+
+    - name: Deny incoming traffic by default
+      community.general.ufw:
+        default: deny
+        direction: incoming
+
+    - name: Allow outgoing traffic by default
+      community.general.ufw:
+        default: allow
+        direction: outgoing
+
+    - name: Remove unrestricted OpenSSH firewall rule
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+        delete: true
+
+    - name: Allow SSH from local networks
+      community.general.ufw:
+        rule: allow
+        proto: tcp
+        from_ip: "{{ item }}"
+        to_port: "22"
+      loop: "{{ ssh_allowed_cidrs }}"
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
