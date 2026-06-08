@@ -20,7 +20,7 @@ Standalone playbook reference.
 - `pixi.yml`: installs Pixi and adds it to `PATH`
 - `rust.yml`: installs Rust with `rustup`, adds Cargo to `PATH`, and installs configured Cargo tools
 - `snap_packages.yml`: installs the configured Snap packages
-- `ssh_server.yml`: installs OpenSSH server, enables the `ssh` service, and configures UFW to allow SSH only from private local networks
+- `ssh_server.yml`: installs OpenSSH server, requires key-based authentication, enables the `ssh` service, and configures UFW to allow SSH only from private local networks
 - `uv.yml`: installs `uv` and adds `~/.local/bin` to `PATH`
 - `xkb.yml`: configures the XKB keyboard layer, including the Japanese keyboard layout and Ctrl/Caps Lock swap for console and desktop session state
 - `zsh.yml`: ensures `zsh` is installed and sets it as the default shell

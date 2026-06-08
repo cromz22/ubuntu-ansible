@@ -24,6 +24,32 @@
         state: started
         enabled: true
 
+    - name: Ensure SSH server config drop-in directory exists
+      file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Require public key authentication for SSH
+      copy:
+        dest: /etc/ssh/sshd_config.d/00-key-only-auth.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          PubkeyAuthentication yes
+          AuthenticationMethods publickey
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          ChallengeResponseAuthentication no
+      notify: Reload SSH
+
+    - name: Validate SSH server configuration
+      command: /usr/sbin/sshd -t
+      changed_when: false
+
     - name: Deny incoming traffic by default
       community.general.ufw:
         default: deny
@@ -51,3 +77,9 @@
     - name: Enable UFW
       community.general.ufw:
         state: enabled
+
+  handlers:
+    - name: Reload SSH
+      service:
+        name: ssh
+        state: reloaded
