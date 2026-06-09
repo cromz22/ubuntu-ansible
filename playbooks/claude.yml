@@ -1,0 +1,25 @@
+- hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    claude_bin: "{{ lookup('env', 'HOME') }}/.local/bin/claude"
+    claude_install_target: "latest"
+
+  tasks:
+    - name: Install Claude dependencies and sandbox packages
+      become: true
+      ansible.builtin.apt:
+        name:
+          - bubblewrap
+          - curl
+          - socat
+        state: present
+        update_cache: true
+
+    - name: Install Claude Code CLI (native installer)
+      ansible.builtin.shell: |
+        curl -fsSL https://claude.ai/install.sh | bash -s "{{ claude_install_target }}"
+      args:
+        executable: /bin/bash
+        creates: "{{ claude_bin }}"

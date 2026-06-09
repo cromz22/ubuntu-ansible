@@ -50,6 +50,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
         - `azure_cli.yml`
+        - `claude.yml`
         - `docker.yml`
         - `mount_disk.yml`
         - `nvidia_driver.yml`

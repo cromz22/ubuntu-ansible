@@ -9,6 +9,7 @@ Standalone playbook reference.
 - `apt_packages_network.yml`: installs common networking and diagnostic APT packages
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
+- `claude.yml`: installs Claude Code CLI via the native installer and installs the `bubblewrap` and `socat` sandbox packages; rerunning this playbook does not upgrade Claude
 - `codex.yml`: checks that the Codex CLI is available and installs Linux sandbox prerequisites, including `bubblewrap`; on Ubuntu 24.04 it loads the `bwrap` AppArmor profile when available, otherwise it applies the Codex-documented user namespace sysctl fallback
 - `docker.yml`: adds Docker's official APT repository, installs Docker Engine with Buildx and Compose plugins, starts the Docker service, and adds the invoking user to the `docker` group
 - `fcitx5.yml`: configures the fcitx5 IME layer, including the Japanese input profile, autostart, and IME hotkeys in the user's home directory
@@ -24,3 +25,11 @@ Standalone playbook reference.
 - `uv.yml`: installs `uv` and adds `~/.local/bin` to `PATH`
 - `xkb.yml`: configures the XKB keyboard layer, including the Japanese keyboard layout and Ctrl/Caps Lock swap for console and desktop session state
 - `zsh.yml`: ensures `zsh` is installed and sets it as the default shell
+
+## Sudo prompt
+
+The following playbooks use `become: true` and should be used with `-K`.
+
+- Needs `-K`: `apt_packages_base.yml`, `apt_packages_desktop.yml`, `apt_packages_network.yml`, `azure_cli.yml`, `claude.yml`, `codex.yml`, `docker.yml`, `fcitx5.yml`, `idle.yml`, `mount_disk.yml`, `nvidia_docker.yml`, `nvidia_driver.yml`, `snap_packages.yml`, `ssh_server.yml`, `xkb.yml`, `zsh.yml`
+- Does not need `-K`: `bun.yml`, `nvm.yml`, `pixi.yml`, `rust.yml`, `uv.yml`
+
