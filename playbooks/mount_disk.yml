@@ -88,3 +88,9 @@
         fstype: "{{ filesystem_type }}"
         opts: defaults,nofail
         state: mounted
+
+    - name: Allow all users to create directories in the mounted data directory
+      ansible.builtin.file:
+        path: "{{ mount_point }}"
+        state: directory
+        mode: "1777"
