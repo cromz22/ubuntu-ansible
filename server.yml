@@ -1,5 +1,4 @@
 - import_playbook: playbooks/apt_packages_base.yml
-- import_playbook: playbooks/ssh_server.yml
 - import_playbook: playbooks/zsh.yml
 - import_playbook: playbooks/rust.yml
 - import_playbook: playbooks/nvm.yml
