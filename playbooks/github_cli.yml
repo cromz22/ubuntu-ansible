@@ -1,0 +1,47 @@
+# Official GitHub CLI installation instructions for Debian and Ubuntu:
+# https://github.com/cli/cli/blob/trunk/docs/install_linux.md
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  vars:
+    github_cli_keyring_path: /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    github_cli_keyring_sha256: 6084d5d7bd8e288441e0e94fc6275570895da18e6751f70f057485dc2d1a811b
+    github_cli_repository_path: /etc/apt/sources.list.d/github-cli.list
+
+  tasks:
+    - name: Detect Debian architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: github_cli_arch
+      changed_when: false
+
+    - name: Ensure APT keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Ensure APT sources directory exists
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d
+        state: directory
+        mode: "0755"
+
+    - name: Download GitHub CLI package signing keyring
+      ansible.builtin.get_url:
+        url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        dest: "{{ github_cli_keyring_path }}"
+        checksum: "sha256:{{ github_cli_keyring_sha256 }}"
+        mode: "0644"
+
+    - name: Configure GitHub CLI APT repository
+      ansible.builtin.copy:
+        content: "deb [arch={{ github_cli_arch.stdout }} signed-by={{ github_cli_keyring_path }}] https://cli.github.com/packages stable main\n"
+        dest: "{{ github_cli_repository_path }}"
+        mode: "0644"
+
+    - name: Install GitHub CLI
+      ansible.builtin.apt:
+        name: gh
+        state: present
+        update_cache: true

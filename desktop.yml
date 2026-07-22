@@ -11,3 +11,4 @@
 - import_playbook: playbooks/uv.yml
 - import_playbook: playbooks/snap_packages.yml
 - import_playbook: playbooks/idle.yml
+- import_playbook: playbooks/github_cli.yml
