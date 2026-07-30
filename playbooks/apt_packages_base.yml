@@ -27,6 +27,7 @@
           - unzip
           - vim
           - zsh
+          - 7zip
         state: present
         update_cache: true
 
