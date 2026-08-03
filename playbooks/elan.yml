@@ -1,0 +1,60 @@
+- hosts: localhost
+  become: false
+  gather_facts: true
+
+  vars:
+    elan_version: "7.1"
+    elan_package_name: "elan-{{ elan_version }}"
+    elan_version_url: "{{ elan_version | replace('.', '-') }}"
+    elan_package_url: "https://www.mpi.nl/tools/elan/ELAN_{{ elan_version_url }}_linux.deb"
+    elan_package_path: "/tmp/ELAN_{{ elan_version_url }}_linux.deb"
+    elan_package_checksum: "sha256:01c52cb5cde3090b2e9a46a299936b7a358363e7231507f7fc8a01fba7394073"
+
+  tasks:
+    - name: Require a supported system for ELAN
+      ansible.builtin.assert:
+        that:
+          - ansible_os_family == "Debian"
+          - ansible_architecture == "x86_64"
+        fail_msg: "ELAN {{ elan_version }} requires a 64-bit Debian-based Linux system."
+
+    - name: Check installed ELAN version
+      ansible.builtin.command:
+        argv:
+          - dpkg-query
+          - --show
+          - "--showformat=${Version}"
+          - "{{ elan_package_name }}"
+      register: elan_installed_version
+      changed_when: false
+      failed_when: false
+
+    - name: Install ELAN
+      when: >-
+        elan_installed_version.rc != 0 or
+        elan_installed_version.stdout != elan_version
+      block:
+        - name: Install Debian package extraction support
+          become: true
+          ansible.builtin.apt:
+            name: xz-utils
+            state: present
+
+        - name: Download ELAN package
+          ansible.builtin.get_url:
+            url: "{{ elan_package_url }}"
+            dest: "{{ elan_package_path }}"
+            checksum: "{{ elan_package_checksum }}"
+            mode: "0644"
+
+        - name: Install ELAN package
+          become: true
+          ansible.builtin.apt:
+            deb: "{{ elan_package_path }}"
+            state: present
+
+      always:
+        - name: Remove downloaded ELAN package
+          ansible.builtin.file:
+            path: "{{ elan_package_path }}"
+            state: absent

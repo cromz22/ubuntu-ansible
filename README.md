@@ -46,6 +46,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
     - [Snap](https://snapcraft.io/) to manage desktop apps (`snap_packages.yml`)
         - [RCLONE](https://rclone.org/) is installed via snap.
     - GNOME idle timeout (`idle.yml`)
+    - [ELAN](https://archive.mpi.nl/tla/elan) linguistic annotation software from its official `.deb` package (`elan.yml`)
 
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
