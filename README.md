@@ -41,6 +41,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
         - [WezTerm](https://wezterm.org/) is installed from WezTerm's official APT repository.
         - [Slack](https://slack.com/) is installed from Slack's official `.deb` package.
         - [Zoom](https://zoom.us/) is installed from Zoom's official latest `.deb` package.
+        - [Audacity](https://www.audacityteam.org/) audio editor is installed from Ubuntu's APT repositories.
     - Japanese keyboard layout and physical key mapping via XKB, including Ctrl and Caps Lock swapped (`xkb.yml`)
     - Japanese IME setup via fcitx5, using 半角/全角 to toggle IME, 変換 for IME on, and 無変換 for IME off (`fcitx5.yml`)
     - [Snap](https://snapcraft.io/) to manage desktop apps (`snap_packages.yml`)

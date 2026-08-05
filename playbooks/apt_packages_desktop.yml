@@ -93,4 +93,5 @@
           - fcitx5-mozc
           - im-config
           - xclip
+          - audacity
         state: present
