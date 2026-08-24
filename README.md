@@ -35,6 +35,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
     - [Pixi](https://pixi.prefix.dev/latest/) for package management of projects that mainly use Python (`pixi.yml`)
     - [uv](https://docs.astral.sh/uv/) for package management of projects that use only Python (`uv.yml`)
     - [GitHub CLI](https://cli.github.com/) from GitHub's official APT repository (`github_cli.yml`)
+    - [Git LFS](https://git-lfs.com/) with its global Git filters initialized for the invoking user (`git_lfs.yml`)
 
 - Desktop (`desktop.yml`)
     - Additional desktop packages via apt (`apt_packages_desktop.yml`)

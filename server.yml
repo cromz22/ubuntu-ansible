@@ -7,3 +7,4 @@
 - import_playbook: playbooks/pixi.yml
 - import_playbook: playbooks/uv.yml
 - import_playbook: playbooks/github_cli.yml
+- import_playbook: playbooks/git_lfs.yml

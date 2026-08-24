@@ -26,11 +26,12 @@ Standalone playbook reference.
 - `xkb.yml`: configures the XKB keyboard layer, including the Japanese keyboard layout and Ctrl/Caps Lock swap for console and desktop session state
 - `zsh.yml`: ensures `zsh` is installed and sets it as the default shell
 - `github_cli.yml`: adds GitHub's official APT repository and signing keyring, then installs GitHub CLI
+- `git_lfs.yml`: installs Git LFS and initializes its global Git filters for the invoking user
 - `elan.yml`: downloads and installs the pinned official ELAN Debian package, including its bundled Java runtime
 
 ## Sudo prompt
 
 The following playbooks use `become: true` and should be used with `-K`.
 
-- Needs `-K`: `apt_packages_base.yml`, `apt_packages_desktop.yml`, `apt_packages_network.yml`, `azure_cli.yml`, `claude.yml`, `codex.yml`, `docker.yml`, `fcitx5.yml`, `idle.yml`, `mount_disk.yml`, `nvidia_docker.yml`, `nvidia_driver.yml`, `snap_packages.yml`, `ssh_server.yml`, `xkb.yml`, `zsh.yml`, `github_cli.yml`, `elan.yml`
+- Needs `-K`: `apt_packages_base.yml`, `apt_packages_desktop.yml`, `apt_packages_network.yml`, `azure_cli.yml`, `claude.yml`, `codex.yml`, `docker.yml`, `fcitx5.yml`, `idle.yml`, `mount_disk.yml`, `nvidia_docker.yml`, `nvidia_driver.yml`, `snap_packages.yml`, `ssh_server.yml`, `xkb.yml`, `zsh.yml`, `github_cli.yml`, `git_lfs.yml`, `elan.yml`
 - Does not need `-K`: `bun.yml`, `nvm.yml`, `pixi.yml`, `rust.yml`, `uv.yml`
