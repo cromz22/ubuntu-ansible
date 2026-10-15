@@ -1,0 +1,30 @@
+# Microsoft Learn reference:
+# https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-install-linux-package
+- hosts: localhost
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Require Ubuntu
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['distribution'] == 'Ubuntu'
+        fail_msg: This playbook requires Ubuntu.
+
+    - name: Install repository setup prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - xz-utils
+        state: present
+        update_cache: true
+
+    - name: Install Microsoft repository configuration
+      ansible.builtin.apt:
+        deb: "https://packages.microsoft.com/config/ubuntu/{{ ansible_facts['distribution_version'] }}/packages-microsoft-prod.deb"
+
+    - name: Install AzCopy
+      ansible.builtin.apt:
+        name: azcopy
+        state: present
+        update_cache: true

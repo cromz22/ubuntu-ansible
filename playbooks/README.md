@@ -8,6 +8,7 @@ Standalone playbook reference.
 - `apt_packages_desktop.yml`: installs desktop-only APT packages for input methods and clipboard support, and Audacity; WezTerm is installed from its official APT repository, Slack and Zoom use their official `.deb` packages
 - `apt_packages_network.yml`: installs common networking and diagnostic APT packages
 - `apt_packages_os_image.yml`: installs tools for OS disk image creation: `debootstrap` to bootstrap Debian/Ubuntu root filesystems and `qemu-utils` to create and manage disk image files
+- `azcopy.yml`: installs Microsoft's repository configuration for the Ubuntu version and installs AzCopy through APT
 - `azure_cli.yml`: adds Microsoft's APT repository and installs Azure CLI
 - `bun.yml`: installs Bun, updates `~/.zshrc`, and installs configured global Bun packages
 - `claude.yml`: installs Claude Code CLI via the native installer and installs the `bubblewrap` and `socat` sandbox packages; rerunning this playbook does not upgrade Claude
@@ -34,5 +35,5 @@ Standalone playbook reference.
 
 The following playbooks use `become: true` and should be used with `-K`.
 
-- Needs `-K`: `apt_packages_os_image.yml`, `apt_packages_base.yml`, `apt_packages_desktop.yml`, `apt_packages_network.yml`, `azure_cli.yml`, `claude.yml`, `codex.yml`, `docker.yml`, `fcitx5.yml`, `idle.yml`, `mount_disk.yml`, `nvidia_docker.yml`, `nvidia_driver.yml`, `snap_packages.yml`, `ssh_server.yml`, `xkb.yml`, `zsh.yml`, `github_cli.yml`, `git_lfs.yml`, `elan.yml`
+- Needs `-K`: `apt_packages_os_image.yml`, `apt_packages_base.yml`, `apt_packages_desktop.yml`, `apt_packages_network.yml`, `azcopy.yml`, `azure_cli.yml`, `claude.yml`, `codex.yml`, `docker.yml`, `fcitx5.yml`, `idle.yml`, `mount_disk.yml`, `nvidia_docker.yml`, `nvidia_driver.yml`, `snap_packages.yml`, `ssh_server.yml`, `xkb.yml`, `zsh.yml`, `github_cli.yml`, `git_lfs.yml`, `elan.yml`
 - Does not need `-K`: `bun.yml`, `nvm.yml`, `pixi.yml`, `rust.yml`, `uv.yml`

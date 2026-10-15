@@ -52,6 +52,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
+        - `azcopy.yml`
         - `azure_cli.yml`
         - `apt_packages_os_image.yml`
         - `claude.yml`
@@ -138,6 +139,12 @@ ansible-playbook playbooks/apt_packages_os_image.yml -K
         ```
         ansible-playbook playbooks/nvidia_docker.yml -K
         ```
+
+### AzCopy setup
+
+```bash
+ansible-playbook playbooks/azcopy.yml -K
+```
 
 ### Azure CLI setup (Run on local)
 
