@@ -1,0 +1,12 @@
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install OS disk image creation tools
+      apt:
+        name:
+          - debootstrap
+          - qemu-utils
+        state: present
+        update_cache: true

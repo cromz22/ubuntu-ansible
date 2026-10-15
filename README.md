@@ -53,6 +53,7 @@ Detailed descriptions of each standalone playbook are in [playbooks/README.md](.
 - Standalone playbooks
     - Below are the playbooks that are not imported in `desktop.yml` nor `server.yml` because of its specific nature.
         - `azure_cli.yml`
+        - `apt_packages_os_image.yml`
         - `claude.yml`
         - `docker.yml`
         - `mount_disk.yml`
@@ -77,6 +78,12 @@ ansible-playbook desktop.yml -K
 
 ```bash
 ansible-playbook playbooks/apt_packages_network.yml -K
+```
+
+### Installing OS disk image creation tools (Optional)
+
+```bash
+ansible-playbook playbooks/apt_packages_os_image.yml -K
 ```
 
 ### GPU workstation setup
